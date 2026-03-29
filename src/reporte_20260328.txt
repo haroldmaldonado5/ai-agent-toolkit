@@ -1,0 +1,50 @@
+============================================================
+📊 REPORTE SEMANAL - CONSULTORA
+Período: 2026-03-21 a 2026-03-28
+============================================================
+
+🕐 HORAS FACTURABLES POR PROYECTO (últimos 7 días)
+------------------------------------------------------------
+  • Implementación ERP
+    Horas: 40.9h | Tarifa: $150.0/h | Total: $6,137.58
+  • Campaña Digital Q1
+    Horas: 27.7h | Tarifa: $120.0/h | Total: $3,320.22
+  • Asesoría Fiscal Anual
+    Horas: 22.4h | Tarifa: $180.0/h | Total: $4,039.15
+
+  TOTAL SEMANAL: 91.0 horas | $13,496.95
+
+👥 ESTADO DE CLIENTES
+------------------------------------------------------------
+  ✅ Activo: 3
+  ⏸️ Inactivo: 1
+
+💰 INGRESOS SEMANALES
+------------------------------------------------------------
+  Total ingresado: $21,750.00
+  Transacciones: 3
+
+  Detalle:
+    • 2026-03-27 | Asesoría Fiscal Anual | $3,600.00 | Adelanto asesoría
+    • 2026-03-25 | Campaña Digital Q1 | $5,400.00 | Factura campaña digital
+    • 2026-03-21 | Implementación ERP | $12,750.00 | Pago parcial ERP
+
+📋 TAREAS PENDIENTES
+------------------------------------------------------------
+  🔴 [ALTA] Finance Corp
+    Revisar documentos fiscales
+    Vencimiento: 2026-03-29
+
+  🔴 [ALTA] Tech Solutions SA
+    Reunión de seguimiento ERP
+    Vencimiento: 2026-03-30
+
+  🟡 [MEDIA] Marketing Pro
+    Entregar reporte de métricas
+    Vencimiento: 2026-04-02
+
+  🟢 [BAJA] Tech Solutions SA
+    Capacitación usuarios
+    Vencimiento: 2026-04-07
+
+============================================================
