@@ -1,0 +1,81 @@
+# === SECRETOS Y CREDENCIALES ===
+# Google OAuth
+gcp-oauth.keys.json
+client_secret*.json
+tokens.json
+credentials.json
+service-account*.json
+*-credentials.json
+oauth-*.json
+
+# GitHub Tokens
+.github-token
+github-token.txt
+*.pat
+
+# API Keys y Secrets
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+*.p12
+secrets/
+*secret*
+*token*
+*credential*
+
+# === ARCHIVOS DE CONFIGURACIÓN ===
+.claude.json
+.claude/
+.config/
+
+# === BASES DE DATOS ===
+*.db
+*.sqlite
+*.sqlite3
+databases/
+
+# === NODE.JS ===
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# === PYTHON ===
+__pycache__/
+*.py[cod]
+*\.class
+*.so
+.Python
+venv/
+ENV/
+env/
+
+# === ARCHIVOS TEMPORALES ===
+temp/
+tmp/
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === EDITORES ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# === OUTPUTS ===
+dist/
+build/
+*.pyc
+
+# === PERMITIR ARCHIVOS NECESARIOS ===
+!package.json
+!package-lock.json
+!tsconfig.json
+!jsconfig.json
