@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Expertos en Consultas médicas especializadas, Programas de wellness corporativo, Nutrición y coaching de salud. Transformamos el bienestar de tu organización">
+    <meta name="keywords" content="Consultas médicas especializadas, Programas de wellness corporativo, Nutrición y coaching de salud, Telemedicina 24/7">
+    <title>HealthConsult Pro - Transformamos el bienestar de tu organización</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: white;
+            color: #1e3a8a;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-secondary:hover {
+            background: white;
+            color: #1e3a8a;
+        }
+        
+        /* Benefits Section */
+        .benefits {
+            padding: 80px 20px;
+            background: #f8f9fa;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1e3a8a;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .benefit-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .benefit-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .benefit-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .benefit-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #1e3a8a;
+        }
+        
+        /* Services Section */
+        .services {
+            padding: 80px 20px;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .service-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            border-left: 4px solid #1e3a8a;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .service-card h3 {
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            padding: 80px 20px;
+            background: #f8f9fa;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .testimonial-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stars {
+            color: #fbbf24;
+            margin-bottom: 1rem;
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1rem;
+            color: #555;
+        }
+        
+        .testimonial-author {
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+        
+        /* Final CTA */
+        .final-cta {
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .final-cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .final-cta p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .contact-info {
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Transformamos el bienestar de tu organización</h1>
+            <p>Ayudamos a empresas que cuidan el bienestar de su equipo a lograr sus objetivos</p>
+            <div class="cta-buttons">
+                <a href="#contact" class="btn btn-primary">Agendar Consulta Gratis</a>
+                <a href="#services" class="btn btn-secondary">Conocer Más</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Benefits Section -->
+    <section class="benefits">
+        <div class="container">
+            <h2 class="section-title">Por Qué Elegirnos</h2>
+            <div class="benefits-grid">
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">✓</div>
+                    <h3>Experiencia Comprobada</h3>
+                    <p>Años de experiencia en la industria</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">⚡</div>
+                    <h3>Resultados Rápidos</h3>
+                    <p>Soluciones efectivas en tiempo récord</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">💯</div>
+                    <h3>Satisfacción Garantizada</h3>
+                    <p>Compromiso con la excelencia</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <h2 class="section-title">Nuestros Servicios</h2>
+            <div class="services-grid">
+
+                <div class="service-card">
+                    <h3>🎯 Consultas médicas especializadas</h3>
+                    <p>Servicio profesional de Consultas médicas especializadas adaptado a tus necesidades</p>
+                </div>
+
+                <div class="service-card">
+                    <h3>🎯 Programas de wellness corporativo</h3>
+                    <p>Servicio profesional de Programas de wellness corporativo adaptado a tus necesidades</p>
+                </div>
+
+                <div class="service-card">
+                    <h3>🎯 Nutrición y coaching de salud</h3>
+                    <p>Servicio profesional de Nutrición y coaching de salud adaptado a tus necesidades</p>
+                </div>
+
+                <div class="service-card">
+                    <h3>🎯 Telemedicina 24/7</h3>
+                    <p>Servicio profesional de Telemedicina 24/7 adaptado a tus necesidades</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-title">Lo Que Dicen Nuestros Clientes</h2>
+            <div class="testimonials-grid">
+
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="testimonial-text">"Excelente servicio, resultados más allá de mis expectativas."</p>
+                    <p class="testimonial-author">Cliente Satisfecho</p>
+                    <p style="color: #888; font-size: 0.9rem;">Empresario</p>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="testimonial-text">"Profesionales dedicados que realmente se preocupan por el éxito de sus clientes."</p>
+                    <p class="testimonial-author">María González</p>
+                    <p style="color: #888; font-size: 0.9rem;">Directora de Marketing</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    
+    <!-- Final CTA Section -->
+    <section class="final-cta" id="contact">
+        <div class="container">
+            <h2>¿Listo para Comenzar?</h2>
+            <p>Agenda tu consulta gratuita hoy mismo</p>
+            <a href="mailto:info@healthconsult.com" class="btn btn-primary">Agendar Ahora</a>
+            <p style="margin-top: 1rem; opacity: 0.8;">Sin compromiso. Cancelación gratuita.</p>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="contact-info">
+                <p>📧 info@healthconsult.com</p>
+                <p>📱 +1 (555) 123-4567</p>
+                <p>📍 Miami, FL</p>
+            </div>
+            <p style="margin-top: 2rem; opacity: 0.7;">© 2026 Todos los derechos reservados</p>
+        </div>
+    </footer>
+</body>
+</html>
