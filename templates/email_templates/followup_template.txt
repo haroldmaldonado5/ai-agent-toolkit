@@ -1,0 +1,17 @@
+Asunto: {subject}
+
+Hola {client_name},
+
+{opening_paragraph}
+
+{main_content}
+
+{call_to_action}
+
+{closing}
+
+Saludos,
+{sender_name}
+{sender_title}
+{company_name}
+{contact_info}

@@ -1,0 +1,18 @@
+=== INSTAGRAM POST ===
+
+CAPTION:
+{hook}
+
+{main_message}
+
+{call_to_action}
+
+{hashtags}
+
+---
+VISUAL DESCRIPTION:
+{image_description}
+
+---
+BEST TIME TO POST:
+{suggested_time}
