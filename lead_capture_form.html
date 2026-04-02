@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - Agent Toolkit</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+        }
+        h1 { color: #333; margin-bottom: 10px; font-size: 28px; }
+        .subtitle { color: #666; margin-bottom: 30px; font-size: 16px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; color: #333; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
+        input, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        textarea { resize: vertical; min-height: 120px; }
+        .required { color: #e74c3c; }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        button:active { transform: translateY(0); }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .success-message {
+            display: none;
+            background: #10b981;
+            color: white;
+            padding: 16px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            animation: slideIn 0.5s;
+        }
+        .success-message.show { display: block; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .error { border-color: #e74c3c !important; }
+        .error-message { color: #e74c3c; font-size: 12px; margin-top: 5px; display: none; }
+        .error-message.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>¿Listo para automatizar?</h1>
+        <p class="subtitle">Completa el formulario y te contactamos en 24 horas</p>
+        
+        <form id="leadForm">
+            <div class="form-group">
+                <label for="nombre">Nombre completo <span class="required">*</span></label>
+                <input type="text" id="nombre" name="nombre" required>
+                <div class="error-message" id="nombre-error">Por favor ingresa tu nombre</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email <span class="required">*</span></label>
+                <input type="email" id="email" name="email" required>
+                <div class="error-message" id="email-error">Por favor ingresa un email valido</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="telefono">Telefono</label>
+                <input type="tel" id="telefono" name="telefono" placeholder="+1 (555) 123-4567">
+            </div>
+            
+            <div class="form-group">
+                <label for="empresa">Empresa</label>
+                <input type="text" id="empresa" name="empresa" placeholder="Tu empresa">
+            </div>
+            
+            <div class="form-group">
+                <label for="mensaje">¿Que quieres automatizar? <span class="required">*</span></label>
+                <textarea id="mensaje" name="mensaje" required placeholder="Cuentanos sobre tu negocio y que procesos quieres automatizar..."></textarea>
+                <div class="error-message" id="mensaje-error">Por favor cuentanos que necesitas</div>
+            </div>
+            
+            <button type="submit" id="submitBtn">Enviar solicitud</button>
+        </form>
+        
+        <div class="success-message" id="successMessage">
+            <strong>¡Gracias!</strong> Tu solicitud ha sido enviada. Te contactaremos pronto.
+        </div>
+    </div>
+    
+    <script>
+        const form = document.getElementById('leadForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMessage = document.getElementById('successMessage');
+        
+        document.querySelectorAll('input[required], textarea[required]').forEach(input => {
+            input.addEventListener('blur', () => validateField(input));
+            input.addEventListener('input', () => {
+                if (input.classList.contains('error')) validateField(input);
+            });
+        });
+        
+        function validateField(field) {
+            const errorDiv = document.getElementById(`${field.id}-error`);
+            let isValid = true;
+            
+            if (field.hasAttribute('required') && !field.value.trim()) isValid = false;
+            
+            if (field.type === 'email' && field.value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(field.value)) isValid = false;
+            }
+            
+            if (!isValid) {
+                field.classList.add('error');
+                if (errorDiv) errorDiv.classList.add('show');
+            } else {
+                field.classList.remove('error');
+                if (errorDiv) errorDiv.classList.remove('show');
+            }
+            
+            return isValid;
+        }
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            let isValid = true;
+            document.querySelectorAll('input[required], textarea[required]').forEach(input => {
+                if (!validateField(input)) isValid = false;
+            });
+            
+            if (!isValid) return;
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Enviando...';
+            
+            const formData = {
+                nombre: document.getElementById('nombre').value,
+                email: document.getElementById('email').value,
+                telefono: document.getElementById('telefono').value || null,
+                empresa: document.getElementById('empresa').value || null,
+                mensaje: document.getElementById('mensaje').value,
+                fuente: 'web_form'
+            };
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/lead', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (!response.ok) throw new Error('Error en el servidor');
+                
+                const result = await response.json();
+                console.log('Lead capturado:', result);
+                
+                form.style.display = 'none';
+                successMessage.classList.add('show');
+                
+                setTimeout(() => {
+                    form.reset();
+                    form.style.display = 'block';
+                    successMessage.classList.remove('show');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Enviar solicitud';
+                }, 3000);
+                
+            } catch (error) {
+                alert('Hubo un error. Por favor intenta de nuevo.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Enviar solicitud';
+            }
+        });
+    </script>
+</body>
+</html>
