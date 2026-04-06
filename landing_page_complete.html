@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatiza tu Negocio - Agent Toolkit</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .hero p {
+            font-size: 24px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+        
+        .hero-cta {
+            display: inline-block;
+            padding: 16px 40px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .hero-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 80px 20px;
+            background: #f8f9fa;
+        }
+        
+        .features h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 60px;
+            color: #2d3748;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+        
+        .feature-card p {
+            color: #666;
+            line-height: 1.8;
+        }
+        
+        /* Benefits Section */
+        .benefits {
+            padding: 80px 20px;
+            background: white;
+        }
+        
+        .benefits h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 60px;
+            color: #2d3748;
+        }
+        
+        .benefits-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .benefit-check {
+            font-size: 24px;
+            margin-right: 20px;
+            color: #10b981;
+        }
+        
+        .benefit-item h4 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: #2d3748;
+        }
+        
+        .benefit-item p {
+            color: #666;
+        }
+        
+        /* Contact Form Section */
+        .contact-section {
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .contact-section h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .contact-section .subtitle {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 50px;
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .required {
+            color: #e74c3c;
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .success-message {
+            display: none;
+            background: #10b981;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            animation: slideIn 0.5s;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .error {
+            border-color: #e74c3c !important;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        /* Footer */
+        footer {
+            background: #2d3748;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        footer p {
+            opacity: 0.8;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .features h2, .benefits h2, .contact-section h2 {
+                font-size: 28px;
+            }
+            
+            .form-container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Automatiza tu Negocio en 48 Horas</h1>
+            <p>Ahorra 20+ horas semanales con IA y automatización</p>
+            <a href="#contacto" class="hero-cta">Solicita una Demo Gratis</a>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2>¿Qué Podemos Automatizar?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Reportes Automáticos</h3>
+                    <p>Genera reportes mensuales, trimestrales y anuales automáticamente. Enviados directamente a Google Docs o tu email.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📧</div>
+                    <h3>Follow-ups Inteligentes</h3>
+                    <p>Nunca pierdas un cliente por falta de seguimiento. Sistema automático de emails personalizados.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Captura de Leads 24/7</h3>
+                    <p>Formularios inteligentes que califican leads automáticamente y los organizan por prioridad.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Redes Sociales</h3>
+                    <p>Contenido generado automáticamente para Instagram, LinkedIn y más. Programación inteligente.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🏗️</div>
+                    <h3>Landing Pages</h3>
+                    <p>Crea páginas profesionales en minutos. 3 estilos modernos, responsive y listas para convertir.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Analytics & Métricas</h3>
+                    <p>Dashboard con métricas clave de tu negocio actualizadas en tiempo real.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Benefits Section -->
+    <section class="benefits">
+        <div class="container">
+            <h2>Beneficios Comprobados</h2>
+            <div class="benefits-list">
+                <div class="benefit-item">
+                    <div class="benefit-check">✓</div>
+                    <div>
+                        <h4>Ahorra 20+ horas semanales</h4>
+                        <p>Libera tiempo para enfocarte en lo que realmente importa: hacer crecer tu negocio.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-check">✓</div>
+                    <div>
+                        <h4>Aumenta conversión de leads 3x</h4>
+                        <p>Respuesta instantánea y seguimiento automático = más clientes cerrados.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-check">✓</div>
+                    <div>
+                        <h4>Reduce costos operativos 40%</h4>
+                        <p>Menos trabajo manual, menos errores, más eficiencia.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-check">✓</div>
+                    <div>
+                        <h4>Implementación en 48 horas</h4>
+                        <p>Comienza a ver resultados en menos de una semana.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Form Section -->
+    <section class="contact-section" id="contacto">
+        <div class="container">
+            <h2>¿Listo para Automatizar?</h2>
+            <p class="subtitle">Completa el formulario y te contactamos en 24 horas con una propuesta personalizada</p>
+            
+            <div class="form-container">
+                <form id="leadForm">
+                    <div class="form-group">
+                        <label for="nombre">Nombre completo <span class="required">*</span></label>
+                        <input type="text" id="nombre" name="nombre" required>
+                        <div class="error-message" id="nombre-error">Por favor ingresa tu nombre</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email <span class="required">*</span></label>
+                        <input type="email" id="email" name="email" required>
+                        <div class="error-message" id="email-error">Por favor ingresa un email válido</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="telefono">Teléfono</label>
+                        <input type="tel" id="telefono" name="telefono" placeholder="+1 (555) 123-4567">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="empresa">Empresa <span class="required">*</span></label>
+                        <input type="text" id="empresa" name="empresa" required>
+                        <div class="error-message" id="empresa-error">Por favor ingresa tu empresa</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mensaje">¿Qué quieres automatizar? <span class="required">*</span></label>
+                        <textarea id="mensaje" name="mensaje" required placeholder="Cuéntanos sobre tu negocio y qué procesos quieres automatizar..."></textarea>
+                        <div class="error-message" id="mensaje-error">Por favor cuéntanos qué necesitas</div>
+                    </div>
+                    
+                    <button type="submit" id="submitBtn">Solicitar Demo Gratis</button>
+                </form>
+                
+                <div class="success-message" id="successMessage">
+                    <strong>¡Gracias!</strong> Tu solicitud ha sido enviada. Te contactaremos en las próximas 24 horas.
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Agent Toolkit. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+    
+    <script>
+        const form = document.getElementById('leadForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMessage = document.getElementById('successMessage');
+        
+        // Smooth scroll para el CTA
+        document.querySelector('.hero-cta').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelector('#contacto').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        });
+        
+        // Validación
+        document.querySelectorAll('input[required], textarea[required]').forEach(input => {
+            input.addEventListener('blur', () => validateField(input));
+            input.addEventListener('input', () => {
+                if (input.classList.contains('error')) validateField(input);
+            });
+        });
+        
+        function validateField(field) {
+            const errorDiv = document.getElementById(`${field.id}-error`);
+            let isValid = true;
+            
+            if (field.hasAttribute('required') && !field.value.trim()) {
+                isValid = false;
+            }
+            
+            if (field.type === 'email' && field.value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(field.value)) isValid = false;
+            }
+            
+            if (!isValid) {
+                field.classList.add('error');
+                if (errorDiv) errorDiv.classList.add('show');
+            } else {
+                field.classList.remove('error');
+                if (errorDiv) errorDiv.classList.remove('show');
+            }
+            
+            return isValid;
+        }
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            let isValid = true;
+            document.querySelectorAll('input[required], textarea[required]').forEach(input => {
+                if (!validateField(input)) isValid = false;
+            });
+            
+            if (!isValid) return;
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Enviando...';
+            
+            const formData = {
+                nombre: document.getElementById('nombre').value,
+                email: document.getElementById('email').value,
+                telefono: document.getElementById('telefono').value || null,
+                empresa: document.getElementById('empresa').value,
+                mensaje: document.getElementById('mensaje').value,
+                fuente: 'landing_page'
+            };
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/lead', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (!response.ok) throw new Error('Error en el servidor');
+                
+                const result = await response.json();
+                console.log('Lead capturado:', result);
+                
+                form.style.display = 'none';
+                successMessage.classList.add('show');
+                
+                setTimeout(() => {
+                    form.reset();
+                    form.style.display = 'block';
+                    successMessage.classList.remove('show');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Solicitar Demo Gratis';
+                }, 4000);
+                
+            } catch (error) {
+                alert('Hubo un error. Por favor intenta de nuevo.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Solicitar Demo Gratis';
+            }
+        });
+    </script>
+</body>
+</html>

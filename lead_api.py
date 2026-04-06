@@ -15,9 +15,11 @@ sys.path.append(os.path.dirname(__file__))
 from lead_manager import add_lead, calculate_lead_score, init_leads_table
 
 app = Flask(__name__)
-CORS(app)  # Permitir peticiones desde cualquier origen
+CORS(app, resources={r"/api/*": {"origins": "*"}})  # Permitir peticiones desde Framer y otros orígenes
 
-DB_PATH = os.path.expanduser("~/databases/consultora.db")
+# En producción (Railway) usa ruta relativa; localmente usa la misma
+DB_PATH = os.environ.get('DB_PATH', os.path.join(os.path.dirname(__file__), 'data', 'leads.db'))
+os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)  # Crear directorio si no existe
 
 
 @app.route('/api/lead', methods=['POST'])
@@ -246,4 +248,5 @@ if __name__ == '__main__':
     print("   GET    /health            - Health check")
     print("\nðŸ”¥ Presiona Ctrl+C para detener\n")
     
-    app.run(debug=True, port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
