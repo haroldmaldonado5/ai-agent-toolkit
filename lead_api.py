@@ -16,7 +16,8 @@ from lead_manager import add_lead, calculate_lead_score, init_leads_table
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})  # Permitir peticiones desde Framer y otros orígenes
-
+# Inicializar tablas al startup (necesario para gunicorn/Railway)
+init_leads_table()
 
 @app.route('/api/lead', methods=['POST'])
 def capture_lead():
