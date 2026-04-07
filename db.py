@@ -9,7 +9,7 @@ import sqlite3
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
-# Railway a veces devuelve 'postgres://', psycopg2 necesita 'postgresql://'
+# Railway a veces devuelve 'postgres://', psycopg necesita 'postgresql://'
 if DATABASE_URL and DATABASE_URL.startswith('postgres://'):
     DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
 
@@ -27,8 +27,8 @@ if not USING_POSTGRES:
 def get_connection():
     """Devuelve una conexión a la base de datos activa."""
     if USING_POSTGRES:
-        import psycopg2
-        return psycopg2.connect(DATABASE_URL)
+        import psycopg
+        return psycopg.connect(DATABASE_URL)
     else:
         conn = sqlite3.connect(SQLITE_PATH)
         conn.row_factory = sqlite3.Row  # acceso por nombre de columna
