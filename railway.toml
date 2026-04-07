@@ -1,5 +1,2 @@
 [build]
-builder = "NIXPACKS"
-
-[build.nixpacksPlan.phases.setup]
-nixPkgs = ["postgresql"]
+nixPkgs = ["postgresql", "gcc", "libpq"]
