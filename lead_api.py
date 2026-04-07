@@ -5,21 +5,17 @@ Recibe leads del formulario web y los guarda en la base de datos
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import sqlite3
 import os
 from datetime import datetime
 
-# Importar funciones del lead_manager
+# Importar funciones del lead_manager y capa de base de datos
 import sys
 sys.path.append(os.path.dirname(__file__))
+from db import get_connection, adapt_query
 from lead_manager import add_lead, calculate_lead_score, init_leads_table
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})  # Permitir peticiones desde Framer y otros orígenes
-
-# En producción (Railway) usa ruta relativa; localmente usa la misma
-DB_PATH = os.environ.get('DB_PATH', os.path.join(os.path.dirname(__file__), 'data', 'leads.db'))
-os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)  # Crear directorio si no existe
 
 
 @app.route('/api/lead', methods=['POST'])
@@ -80,21 +76,21 @@ def get_leads_api():
     try:
         estado = request.args.get('estado')
         min_score = int(request.args.get('min_score', 0))
-        
-        conn = sqlite3.connect(DB_PATH)
+
+        conn = get_connection()
         cursor = conn.cursor()
-        
-        query = "SELECT * FROM leads WHERE score >= ?"
+
+        query = adapt_query("SELECT * FROM leads WHERE score >= ?")
         params = [min_score]
-        
+
         if estado:
-            query += " AND estado = ?"
+            query += adapt_query(" AND estado = ?")
             params.append(estado)
-        
+
         query += " ORDER BY score DESC, fecha_captura DESC"
-        
+
         cursor.execute(query, params)
-        
+
         leads = []
         for row in cursor.fetchall():
             leads.append({
@@ -107,17 +103,17 @@ def get_leads_api():
                 'fuente': row[6],
                 'estado': row[7],
                 'score': row[8],
-                'fecha_captura': row[9]
+                'fecha_captura': str(row[9])
             })
-        
+
         conn.close()
-        
+
         return jsonify({
             'success': True,
             'leads': leads,
             'total': len(leads)
         })
-        
+
     except Exception as e:
         return jsonify({
             'success': False,
@@ -132,35 +128,37 @@ def update_lead_estado_api(lead_id):
         data = request.get_json()
         nuevo_estado = data.get('estado')
         notas = data.get('notas')
-        
+
         if not nuevo_estado:
             return jsonify({
                 'success': False,
                 'error': 'Estado requerido'
             }), 400
-        
-        conn = sqlite3.connect(DB_PATH)
+
+        conn = get_connection()
         cursor = conn.cursor()
-        
-        cursor.execute("""
-            UPDATE leads 
+
+        update_q = adapt_query("""
+            UPDATE leads
             SET estado = ?, notas = COALESCE(?, notas)
             WHERE id = ?
-        """, (nuevo_estado, notas, lead_id))
-        
-        cursor.execute("""
+        """)
+        cursor.execute(update_q, (nuevo_estado, notas, lead_id))
+
+        insert_q = adapt_query("""
             INSERT INTO lead_actividad (lead_id, tipo, descripcion)
             VALUES (?, ?, ?)
-        """, (lead_id, 'estado_cambio', f'Estado cambiado a: {nuevo_estado}'))
-        
+        """)
+        cursor.execute(insert_q, (lead_id, 'estado_cambio', f'Estado cambiado a: {nuevo_estado}'))
+
         conn.commit()
         conn.close()
-        
+
         return jsonify({
             'success': True,
             'message': f'Lead {lead_id} actualizado'
         })
-        
+
     except Exception as e:
         return jsonify({
             'success': False,
@@ -170,40 +168,40 @@ def update_lead_estado_api(lead_id):
 
 @app.route('/api/stats', methods=['GET'])
 def get_stats():
-    """EstadÃ­sticas del pipeline"""
+    """Estadísticas del pipeline"""
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = get_connection()
         cursor = conn.cursor()
-        
+
         # Stats por estado
         cursor.execute("""
-            SELECT 
+            SELECT
                 estado,
                 COUNT(*) as cantidad,
                 AVG(score) as score_promedio
             FROM leads
             GROUP BY estado
         """)
-        
+
         stats_por_estado = {}
         for row in cursor.fetchall():
             stats_por_estado[row[0]] = {
                 'cantidad': row[1],
                 'score_promedio': round(row[2], 1) if row[2] else 0
             }
-        
+
         # Stats generales
         cursor.execute("SELECT COUNT(*) FROM leads")
         total_leads = cursor.fetchone()[0]
-        
+
         cursor.execute("SELECT COUNT(*) FROM leads WHERE estado = 'nuevo'")
         leads_nuevos = cursor.fetchone()[0]
-        
+
         cursor.execute("SELECT AVG(score) FROM leads")
         score_promedio = cursor.fetchone()[0]
-        
+
         conn.close()
-        
+
         return jsonify({
             'success': True,
             'stats': {
@@ -213,12 +211,13 @@ def get_stats():
                 'por_estado': stats_por_estado
             }
         })
-        
+
     except Exception as e:
         return jsonify({
             'success': False,
             'error': str(e)
         }), 500
+
 
 
 @app.route('/health', methods=['GET'])
