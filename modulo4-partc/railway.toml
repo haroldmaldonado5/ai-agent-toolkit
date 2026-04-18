@@ -1,0 +1,14 @@
+﻿# Railway Configuration - Módulo 4C Analytics Dashboard
+
+[build]
+builder = "nixpacks"
+
+[build.nixPacks]
+# CRÍTICO: nixPkgs necesario para resolver libpq.so.5 error
+nixPkgs = ["postgresql"]
+
+[deploy]
+# Start command: gunicorn {filename}:app (NO app:app)
+startCommand = "gunicorn dashboard:app"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10

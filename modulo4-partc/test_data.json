@@ -1,0 +1,69 @@
+{
+    "description": "Datos de prueba para Módulo 4C - Analytics Dashboard",
+    "generated": "2026-04-17",
+    "posts": [
+        {
+            "post_id": "IG_001",
+            "plataforma": "instagram",
+            "timestamp": "2026-04-10T10:30:00Z",
+            "vistas": 5420,
+            "likes": 342,
+            "comentarios": 28,
+            "shares": 15,
+            "reach": 4890,
+            "impressions": 6234,
+            "saves": 67,
+            "engagement_rate": 7.90
+        },
+        {
+            "post_id": "TW_001",
+            "plataforma": "twitter",
+            "timestamp": "2026-04-11T09:45:00Z",
+            "vistas": 3210,
+            "likes": 185,
+            "comentarios": 22,
+            "shares": 45,
+            "reach": 2980,
+            "impressions": 3890,
+            "engagement_rate": 7.85
+        },
+        {
+            "post_id": "LI_001",
+            "plataforma": "linkedin",
+            "timestamp": "2026-04-09T11:00:00Z",
+            "vistas": 2890,
+            "likes": 156,
+            "comentarios": 18,
+            "shares": 34,
+            "reach": 2560,
+            "impressions": 3345,
+            "clicks": 123,
+            "engagement_rate": 7.20
+        },
+        {
+            "post_id": "TT_001",
+            "plataforma": "tiktok",
+            "timestamp": "2026-04-08T18:45:00Z",
+            "vistas": 12340,
+            "likes": 892,
+            "comentarios": 67,
+            "shares": 145,
+            "reach": 11230,
+            "impressions": 14567,
+            "saves": 234,
+            "engagement_rate": 8.95
+        },
+        {
+            "post_id": "YT_001",
+            "plataforma": "youtube",
+            "timestamp": "2026-04-07T15:00:00Z",
+            "vistas": 8920,
+            "likes": 467,
+            "comentarios": 52,
+            "shares": 0,
+            "reach": 8920,
+            "impressions": 8920,
+            "engagement_rate": 5.82
+        }
+    ]
+}a

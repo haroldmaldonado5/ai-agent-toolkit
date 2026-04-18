@@ -1,0 +1,32 @@
+﻿# Módulo 4C - Analytics Dashboard
+# Python 3.13 - SIN version pins
+
+# Flask API
+flask
+flask-cors
+gunicorn
+
+# Base de datos
+psycopg2-binary
+
+# Requests para APIs
+requests
+
+# Generación de reportes
+reportlab
+pandas
+openpyxl
+
+# Visualizaciones
+matplotlib
+plotly
+
+# Procesamiento de datos
+python-dateutil
+pytz
+
+# Variables de entorno
+python-dotenv
+
+# Testing (opcional)
+pytest
