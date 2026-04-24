@@ -1,7 +1,7 @@
 import os
 import functools
 from flask import request, jsonify, g
-from db import get_db_connection
+from db import get_connection
 
 
 def require_module(module_name):
@@ -11,7 +11,7 @@ def require_module(module_name):
             api_key = request.headers.get('X-API-Key')
             if not api_key:
                 return jsonify({'error': 'Missing X-API-Key header'}), 401
-            conn = get_db_connection()
+            conn = get_connection()
             cur = conn.cursor()
             cur.execute("""
                 SELECT t.id, t.name, t.active, s.modules
