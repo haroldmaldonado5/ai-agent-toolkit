@@ -1,7 +1,7 @@
 import os
 import secrets
 from flask import Blueprint, request, jsonify
-from db import get_db_connection
+from db import get_connection
 from auth import require_admin
 
 admin_bp = Blueprint('admin', __name__)
