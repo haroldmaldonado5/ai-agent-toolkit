@@ -10,7 +10,7 @@ admin_bp = Blueprint('admin', __name__)
 @admin_bp.route('/admin/tenants', methods=['GET'])
 @require_admin
 def list_tenants():
-    conn = get_db_connection()
+    conn = get_connection()
     cur = conn.cursor()
     cur.execute("""
         SELECT t.id, t.name, t.email, t.plan, t.active, t.created_at,
@@ -49,7 +49,7 @@ def create_tenant():
     modules = plan_modules.get(plan, ['reporting'])
     api_key = secrets.token_hex(32)
 
-    conn = get_db_connection()
+    conn = get_connection()
     cur = conn.cursor()
     cur.execute("""
         INSERT INTO tenants (name, email, api_key, plan)
@@ -81,7 +81,7 @@ def update_tenant(tenant_id):
     plan = data.get('plan')
     active = data.get('active')
 
-    conn = get_db_connection()
+    conn = get_connection()
     cur = conn.cursor()
 
     if plan:
@@ -110,7 +110,7 @@ def update_tenant(tenant_id):
 @admin_bp.route('/admin/tenants/<int:tenant_id>', methods=['DELETE'])
 @require_admin
 def deactivate_tenant(tenant_id):
-    conn = get_db_connection()
+    conn = get_connection()
     cur = conn.cursor()
     cur.execute("UPDATE tenants SET active = FALSE WHERE id = %s", (tenant_id,))
     conn.commit()
