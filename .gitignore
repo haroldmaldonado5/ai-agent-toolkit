@@ -79,3 +79,7 @@ build/
 !package-lock.json
 !tsconfig.json
 !jsconfig.json
+KEYS.txt
+test_tenant.py
+test_tenant1
+body.json
