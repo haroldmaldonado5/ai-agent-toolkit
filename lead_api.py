@@ -18,7 +18,7 @@ app = Flask(__name__)
 from tenant_admin import admin_bp
 app.register_blueprint(admin_bp)
 
-CORS(app, resources={r"/api/*": {"origins": "*"}})  # Permitir peticiones desde Framer y otros orÃ­genes
+CORS(app, resources={r"/api/*": {"origins": "*"}})  # Permitir peticiones desde Framer y otros orÃƒÂ­genes
 # Inicializar tablas al startup (necesario para gunicorn/Railway)
 init_leads_table()
 
@@ -29,7 +29,7 @@ def capture_lead():
     
     Recibe JSON:
     {
-        "nombre": "Juan PÃƒÂ©rez",
+        "nombre": "Juan PÃƒÆ’Ã‚Â©rez",
         "email": "juan@empresa.com",
         "telefono": "555-1234",
         "empresa": "Empresa XYZ",
@@ -57,8 +57,8 @@ def capture_lead():
             fuente=data.get('fuente', 'web')
         )
         
-        # TODO: AquÃƒÂ­ enviar email de notificaciÃƒÂ³n
-        # TODO: AquÃƒÂ­ enviar email de bienvenida al lead
+        # TODO: AquÃƒÆ’Ã‚Â­ enviar email de notificaciÃƒÆ’Ã‚Â³n
+        # TODO: AquÃƒÆ’Ã‚Â­ enviar email de bienvenida al lead
         
         return jsonify({
             'success': True,
@@ -75,6 +75,7 @@ def capture_lead():
 
 
 @app.route('/api/leads', methods=['GET'])
+@require_module('leads')
 def get_leads_api():
     """Obtiene lista de leads"""
     try:
@@ -126,6 +127,7 @@ def get_leads_api():
 
 
 @app.route('/api/lead/<int:lead_id>/estado', methods=['PUT'])
+@require_module('leads')
 def update_lead_estado_api(lead_id):
     """Actualiza estado de un lead"""
     try:
@@ -171,8 +173,9 @@ def update_lead_estado_api(lead_id):
 
 
 @app.route('/api/stats', methods=['GET'])
+@require_module('leads')
 def get_stats():
-    """EstadÃ­sticas del pipeline"""
+    """EstadÃƒÂ­sticas del pipeline"""
     try:
         conn = get_connection()
         cursor = conn.cursor()
@@ -238,18 +241,18 @@ def index():
 
 
 if __name__ == '__main__':
-    print("Ã°Å¸Å¡â‚¬ LEAD CAPTURE API")
-    print("Ã°Å¸â€œÂ Inicializando base de datos...")
+    print("ÃƒÂ°Ã…Â¸Ã…Â¡Ã¢â€šÂ¬ LEAD CAPTURE API")
+    print("ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â Inicializando base de datos...")
     init_leads_table()
-    print("Ã¢Å“â€¦ Listo\n")
-    print("Ã°Å¸â€œÂ¡ API corriendo en: http://localhost:5000")
-    print("Ã°Å¸â€œÂ Endpoints:")
+    print("ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Listo\n")
+    print("ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ API corriendo en: http://localhost:5000")
+    print("ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â Endpoints:")
     print("   POST   /api/lead          - Capturar nuevo lead")
     print("   GET    /api/leads         - Listar leads")
     print("   PUT    /api/lead/:id/estado - Actualizar estado")
-    print("   GET    /api/stats         - EstadÃƒÂ­sticas")
+    print("   GET    /api/stats         - EstadÃƒÆ’Ã‚Â­sticas")
     print("   GET    /health            - Health check")
-    print("\nÃ°Å¸â€Â¥ Presiona Ctrl+C para detener\n")
+    print("\nÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â¥ Presiona Ctrl+C para detener\n")
     
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
