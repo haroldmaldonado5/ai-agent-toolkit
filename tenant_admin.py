@@ -1,4 +1,5 @@
 import os
+import json
 import secrets
 from flask import Blueprint, request, jsonify
 from db import get_connection
@@ -58,8 +59,8 @@ def create_tenant():
     tenant_id = cur.fetchone()[0]
     cur.execute("""
         INSERT INTO subscriptions (tenant_id, plan, modules, status)
-        VALUES (%s, %s, %s::jsonb, 'active')
-    """, (tenant_id, plan, str(modules).replace("'", '"')))
+        VALUES (%s, %s, %s, 'active')
+    """, (tenant_id, plan, json.dumps(modules)))
     conn.commit()
     cur.close()
     conn.close()
@@ -94,9 +95,9 @@ def update_tenant(tenant_id):
         modules = plan_modules.get(plan, ['reporting'])
         cur.execute("UPDATE tenants SET plan = %s WHERE id = %s", (plan, tenant_id))
         cur.execute("""
-            UPDATE subscriptions SET plan = %s, modules = %s::jsonb
+            UPDATE subscriptions SET plan = %s, modules = %s
             WHERE tenant_id = %s
-        """, (plan, str(modules).replace("'", '"'), tenant_id))
+        """, (plan, json.dumps(modules), tenant_id))
 
     if active is not None:
         cur.execute("UPDATE tenants SET active = %s WHERE id = %s", (active, tenant_id))
