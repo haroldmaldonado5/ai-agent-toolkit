@@ -118,3 +118,5 @@ def deactivate_tenant(tenant_id):
     cur.close()
     conn.close()
     return jsonify({'status': 'deactivated', 'tenant_id': tenant_id})
+
+# rebuild
