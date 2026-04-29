@@ -19,7 +19,11 @@ from tenant_admin import admin_bp
 from auth import require_module
 app.register_blueprint(admin_bp)
 
-CORS(app, resources={r"/api/*": {"origins": "*"}})  # Permitir peticiones desde Framer y otros orÃƒÂ­genes
+# Voice Agents Module
+from api.voice.routes import voice_bp
+app.register_blueprint(voice_bp)
+
+CORS(app, resources={r"/api/*": {"origins": "*"}})  # Permitir peticiones desde Framer y otros orígenes
 # Inicializar tablas al startup (necesario para gunicorn/Railway)
 init_leads_table()
 
@@ -30,7 +34,7 @@ def capture_lead():
     
     Recibe JSON:
     {
-        "nombre": "Juan PÃƒÆ’Ã‚Â©rez",
+        "nombre": "Juan Pérez",
         "email": "juan@empresa.com",
         "telefono": "555-1234",
         "empresa": "Empresa XYZ",
@@ -58,8 +62,8 @@ def capture_lead():
             fuente=data.get('fuente', 'web')
         )
         
-        # TODO: AquÃƒÆ’Ã‚Â­ enviar email de notificaciÃƒÆ’Ã‚Â³n
-        # TODO: AquÃƒÆ’Ã‚Â­ enviar email de bienvenida al lead
+        # TODO: Aquí enviar email de notificación
+        # TODO: Aquí enviar email de bienvenida al lead
         
         return jsonify({
             'success': True,
@@ -176,7 +180,7 @@ def update_lead_estado_api(lead_id):
 @app.route('/api/stats', methods=['GET'])
 @require_module('leads')
 def get_stats():
-    """EstadÃƒÂ­sticas del pipeline"""
+    """Estadísticas del pipeline"""
     try:
         conn = get_connection()
         cursor = conn.cursor()
@@ -242,18 +246,21 @@ def index():
 
 
 if __name__ == '__main__':
-    print("ÃƒÂ°Ã…Â¸Ã…Â¡Ã¢â€šÂ¬ LEAD CAPTURE API")
-    print("ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â Inicializando base de datos...")
+    print(" LEAD CAPTURE API")
+    print(" Inicializando base de datos...")
     init_leads_table()
-    print("ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Listo\n")
-    print("ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¡ API corriendo en: http://localhost:5000")
-    print("ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â Endpoints:")
+    print(" Listo\n")
+    print(" API corriendo en: http://localhost:5000")
+    print(" Endpoints:")
     print("   POST   /api/lead          - Capturar nuevo lead")
     print("   GET    /api/leads         - Listar leads")
     print("   PUT    /api/lead/:id/estado - Actualizar estado")
-    print("   GET    /api/stats         - EstadÃƒÆ’Ã‚Â­sticas")
+    print("   GET    /api/stats         - Estadísticas")
     print("   GET    /health            - Health check")
-    print("\nÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â¥ Presiona Ctrl+C para detener\n")
+    print("    POST   /api/voice/webhook      - Webhook Retell AI")
+    print("    POST   /api/voice/make-call    - Crear llamada saliente")
+    print("    POST   /api/voice/get-customer-data - Custom function")
+    print("\n Presiona Ctrl+C para detener\n")
     
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)

@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C5M Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d1a08;
+      --surface: #111f0a;
+      --card: #162310;
+      --border: #2a4a15;
+      --accent: #6aaa3a;
+      --accent2: #4a8a20;
+      --text: #c8e8a0;
+      --muted: #6a8a50;
+      --danger: #cc4444;
+      --danger2: #aa2222;
+      --blue: #5599ee;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    /* ── Login Screen ── */
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(ellipse at center, #1a3010 0%, #0d1a08 70%);
+    }
+    .login-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      width: 360px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+    .login-logo {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+    .login-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 30px;
+    }
+    .login-label {
+      display: block;
+      text-align: left;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+    .login-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 16px;
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      margin-bottom: 20px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .login-input:focus { border-color: var(--accent); }
+    .btn-primary {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #0a1a00;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      border: none;
+      border-radius: 8px;
+      padding: 13px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-primary:active { transform: scale(0.98); }
+    .login-error {
+      color: var(--danger);
+      font-size: 13px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    /* ── Admin Layout ── */
+    .admin-layout { display: none; flex-direction: column; min-height: 100vh; }
+    .admin-layout.visible { display: flex; }
+
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .topbar-logo {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 2px;
+    }
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .topbar-link {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.2s;
+    }
+    .topbar-link:hover { color: var(--text); }
+    .btn-logout {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.2s;
+    }
+    .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
+
+    .admin-body {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 24px;
+      width: 100%;
+    }
+
+    /* ── Stats bar ── */
+    .stats-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+    }
+    .stat-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; letter-spacing: 1px; }
+    .stat-value { font-size: 28px; font-weight: 700; color: var(--accent); }
+
+    /* ── Upload zone ── */
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 40px 20px;
+      text-align: center;
+      background: var(--card);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      margin-bottom: 28px;
+      position: relative;
+    }
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: var(--accent);
+      background: #1e3a10;
+    }
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+    .upload-icon { font-size: 48px; margin-bottom: 12px; }
+    .upload-title { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .upload-sub { font-size: 13px; color: var(--muted); }
+
+    /* Upload progress list */
+    .upload-queue {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .upload-queue.active { display: flex; }
+    .upload-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .upload-item-name { flex: 1; font-size: 13px; color: var(--text); }
+    .upload-item-status { font-size: 12px; }
+    .status-pending { color: var(--muted); }
+    .status-uploading { color: var(--blue); }
+    .status-done { color: var(--accent); }
+    .status-error { color: var(--danger); }
+
+    /* ── Song table ── */
+    .songs-section { margin-top: 8px; }
+    .table-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .songs-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .songs-table th {
+      background: var(--surface);
+      padding: 12px 16px;
+      font-size: 11px;
+      color: var(--muted);
+      text-align: left;
+      letter-spacing: 1px;
+      border-bottom: 1px solid var(--border);
+    }
+    .songs-table td {
+      padding: 12px 16px;
+      font-size: 14px;
+      border-bottom: 1px solid #1a3000;
+      vertical-align: middle;
+    }
+    .songs-table tr:last-child td { border-bottom: none; }
+    .songs-table tr:hover td { background: #1e3a10; }
+
+    .td-thumb {
+      width: 44px; height: 44px;
+      border-radius: 4px;
+      overflow: hidden;
+      background: #2a4a10;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .td-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+    .td-title { font-weight: 600; color: var(--text); }
+    .td-sub { font-size: 12px; color: var(--muted); }
+    .td-badge {
+      display: inline-block;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .btn-delete {
+      background: none;
+      border: 1px solid #3a1010;
+      color: var(--danger);
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.2s;
+    }
+    .btn-delete:hover { background: var(--danger2); color: #fff; border-color: var(--danger2); }
+
+    .no-songs-row td {
+      text-align: center;
+      color: var(--muted);
+      padding: 40px;
+      font-size: 14px;
+    }
+
+    /* ── Toast ── */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 999;
+    }
+    .toast {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 18px;
+      font-size: 13px;
+      color: var(--text);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      animation: slideIn 0.3s ease;
+      max-width: 300px;
+    }
+    .toast.success { border-color: var(--accent); }
+    .toast.error { border-color: var(--danger); color: var(--danger); }
+    @keyframes slideIn {
+      from { transform: translateX(100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ─── Login Screen ─────────────────────────────────────── -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">C5M MUXIC</div>
+    <div class="login-sub">Admin Panel — Restricted Access</div>
+    <label class="login-label" for="passwordInput">PASSWORD</label>
+    <input class="login-input" type="password" id="passwordInput" placeholder="Enter password…" />
+    <button class="btn-primary" id="loginBtn">ACCESS PANEL</button>
+    <div class="login-error" id="loginError">❌ Wrong password. Try again.</div>
+  </div>
+</div>
+
+<!-- ─── Admin Layout ──────────────────────────────────────── -->
+<div class="admin-layout" id="adminLayout">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <span class="topbar-logo">C5M ADMIN</span>
+    <div class="topbar-right">
+      <a href="/" class="topbar-link">← Back to Player</a>
+      <button class="btn-logout" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="admin-body">
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">TOTAL SONGS</div>
+        <div class="stat-value" id="statTotal">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">TOTAL SIZE</div>
+        <div class="stat-value" id="statSize">0 MB</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">TOTAL DURATION</div>
+        <div class="stat-value" id="statDuration">0:00</div>
+      </div>
+    </div>
+
+    <!-- Upload Zone -->
+    <div class="section-title">⬆️ Upload MP3 Files</div>
+    <div class="upload-zone" id="uploadZone">
+      <input type="file" id="fileInput" accept=".mp3,audio/mpeg" multiple />
+      <div class="upload-icon">🎵</div>
+      <div class="upload-title">Drop MP3s here or click to browse</div>
+      <div class="upload-sub">Supports multiple files • Max 50MB each • Metadata extracted automatically</div>
+    </div>
+
+    <!-- Upload Queue -->
+    <div class="upload-queue" id="uploadQueue"></div>
+
+    <!-- Song List -->
+    <div class="songs-section">
+      <div class="section-title">🎧 Library (<span id="songCount">0</span> songs)</div>
+      <div class="table-wrap">
+        <table class="songs-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>TITLE</th>
+              <th>ARTIST</th>
+              <th>ALBUM</th>
+              <th>DURATION</th>
+              <th>SIZE</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="songsTableBody">
+            <tr class="no-songs-row"><td colspan="7">Loading songs…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ─────────────────────────────────────────────────────────
+//  C5M Admin Panel Logic
+// ─────────────────────────────────────────────────────────
+
+const ADMIN_TOKEN = 'admin-token-c5m';
+let songs = [];
+let authed = false;
+
+// ─── Auth ─────────────────────────────────────────────────
+const loginScreen = document.getElementById('loginScreen');
+const adminLayout = document.getElementById('adminLayout');
+const passwordInput = document.getElementById('passwordInput');
+const loginBtn = document.getElementById('loginBtn');
+const loginError = document.getElementById('loginError');
+const logoutBtn = document.getElementById('logoutBtn');
+
+function showAdmin() {
+  loginScreen.style.display = 'none';
+  adminLayout.classList.add('visible');
+  authed = true;
+  loadSongs();
+}
+
+async function tryLogin() {
+  const pw = passwordInput.value.trim();
+  loginError.style.display = 'none';
+  try {
+    const res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pw })
+    });
+    if (res.ok) {
+      sessionStorage.setItem('c5m_admin', '1');
+      showAdmin();
+    } else {
+      loginError.style.display = 'block';
+    }
+  } catch(e) {
+    loginError.textContent = '⚠️ Cannot reach server.';
+    loginError.style.display = 'block';
+  }
+}
+
+loginBtn.addEventListener('click', tryLogin);
+passwordInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+logoutBtn.addEventListener('click', () => {
+  sessionStorage.removeItem('c5m_admin');
+  location.reload();
+});
+
+// Check session
+if (sessionStorage.getItem('c5m_admin') === '1') showAdmin();
+
+// ─── Load Songs ────────────────────────────────────────────
+async function loadSongs() {
+  try {
+    const res = await fetch('/api/songs');
+    songs = await res.json();
+    renderStats();
+    renderTable();
+  } catch(e) {
+    toast('Failed to load songs', 'error');
+  }
+}
+
+function renderStats() {
+  const total = songs.length;
+  const size = songs.reduce((a, s) => a + (s.size || 0), 0);
+  const dur = songs.reduce((a, s) => a + (s.duration || 0), 0);
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statSize').textContent = (size / (1024*1024)).toFixed(1) + ' MB';
+  document.getElementById('statDuration').textContent = fmtDuration(dur);
+  document.getElementById('songCount').textContent = total;
+}
+
+function fmtDuration(sec) {
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = Math.floor(sec % 60);
+  if (h > 0) return `${h}h ${m}m`;
+  return `${m}:${s.toString().padStart(2,'0')}`;
+}
+
+function fmtTime(sec) {
+  if (!sec || isNaN(sec)) return '0:00';
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60);
+  return `${m}:${s.toString().padStart(2,'0')}`;
+}
+
+function fmtBytes(b) {
+  if (b > 1024*1024) return (b / (1024*1024)).toFixed(1) + ' MB';
+  return (b / 1024).toFixed(0) + ' KB';
+}
+
+function renderTable() {
+  const tbody = document.getElementById('songsTableBody');
+  if (!songs.length) {
+    tbody.innerHTML = '<tr class="no-songs-row"><td colspan="7">No songs uploaded yet. Drop some MP3s above!</td></tr>';
+    return;
+  }
+  tbody.innerHTML = songs.map(s => `
+    <tr>
+      <td>
+        <div class="td-thumb">
+          ${s.artwork ? `<img src="${s.artwork}" alt="" />` : '🎵'}
+        </div>
+      </td>
+      <td>
+        <div class="td-title">${escHtml(s.title)}</div>
+      </td>
+      <td><div class="td-sub">${escHtml(s.artist)}</div></td>
+      <td><span class="td-badge">${escHtml(s.album)}</span></td>
+      <td>${fmtTime(s.duration)}</td>
+      <td>${fmtBytes(s.size || 0)}</td>
+      <td>
+        <button class="btn-delete" data-filename="${escAttr(s.filename)}">Delete</button>
+      </td>
+    </tr>
+  `).join('');
+
+  tbody.querySelectorAll('.btn-delete').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const filename = btn.dataset.filename;
+      if (!confirm(`Delete "${filename}"?`)) return;
+      await deleteSong(filename);
+    });
+  });
+}
+
+async function deleteSong(filename) {
+  try {
+    const res = await fetch(`/api/songs/${encodeURIComponent(filename)}`, { method: 'DELETE' });
+    if (res.ok) {
+      toast(`Deleted "${filename}"`, 'success');
+      await loadSongs();
+    } else {
+      toast('Delete failed', 'error');
+    }
+  } catch(e) {
+    toast('Error deleting song', 'error');
+  }
+}
+
+// ─── Upload ────────────────────────────────────────────────
+const uploadZone = document.getElementById('uploadZone');
+const fileInput = document.getElementById('fileInput');
+const uploadQueue = document.getElementById('uploadQueue');
+
+// Drag & drop
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadZone.classList.remove('drag-over');
+  const files = [...e.dataTransfer.files].filter(f => f.name.endsWith('.mp3'));
+  if (files.length) uploadFiles(files);
+});
+
+fileInput.addEventListener('change', () => {
+  const files = [...fileInput.files];
+  if (files.length) uploadFiles(files);
+  fileInput.value = '';
+});
+
+async function uploadFiles(files) {
+  uploadQueue.classList.add('active');
+
+  // Build queue UI
+  const items = files.map((f, i) => {
+    const div = document.createElement('div');
+    div.className = 'upload-item';
+    div.id = `qi-${i}`;
+    div.innerHTML = `
+      <span class="upload-item-name">${escHtml(f.name)}</span>
+      <span class="upload-item-status status-pending" id="qs-${i}">Queued…</span>
+    `;
+    uploadQueue.appendChild(div);
+    return div;
+  });
+
+  // Upload all at once
+  const formData = new FormData();
+  files.forEach(f => formData.append('songs', f));
+
+  // Show uploading
+  items.forEach((_, i) => {
+    document.getElementById(`qs-${i}`).className = 'upload-item-status status-uploading';
+    document.getElementById(`qs-${i}`).textContent = 'Uploading…';
+  });
+
+  try {
+    const res = await fetch('/api/songs/upload', { method: 'POST', body: formData });
+    const data = await res.json();
+
+    if (data.songs) {
+      data.songs.forEach((s, i) => {
+        const el = document.getElementById(`qs-${i}`);
+        if (el) {
+          el.className = 'upload-item-status status-done';
+          el.textContent = `✓ ${s.title}`;
+        }
+      });
+      toast(`✅ Uploaded ${data.uploaded} song(s)`, 'success');
+    } else {
+      items.forEach((_, i) => {
+        const el = document.getElementById(`qs-${i}`);
+        if (el) { el.className = 'upload-item-status status-error'; el.textContent = '✕ Error'; }
+      });
+      toast('Upload failed', 'error');
+    }
+  } catch(e) {
+    toast('Upload error: ' + e.message, 'error');
+  }
+
+  await loadSongs();
+
+  // Clear queue after 3s
+  setTimeout(() => {
+    uploadQueue.innerHTML = '';
+    uploadQueue.classList.remove('active');
+  }, 3000);
+}
+
+// ─── Toast ─────────────────────────────────────────────────
+function toast(msg, type = 'success') {
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+
+// ─── Escape HTML ───────────────────────────────────────────
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escAttr(s) { return escHtml(s); }
+</script>
+</body>
+</html>

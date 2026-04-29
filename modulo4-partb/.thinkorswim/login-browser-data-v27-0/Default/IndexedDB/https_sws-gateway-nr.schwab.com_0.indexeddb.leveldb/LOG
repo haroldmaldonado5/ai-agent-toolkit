@@ -1,0 +1,17 @@
+2025/02/16-16:51:05.424 1068 Creating DB C:\Users\cu5to\.thinkorswim\login-browser-data-v27-0\Default\IndexedDB\https_sws-gateway-nr.schwab.com_0.indexeddb.leveldb since it was missing.
+2025/02/16-16:51:05.428 1068 Reusing MANIFEST C:\Users\cu5to\.thinkorswim\login-browser-data-v27-0\Default\IndexedDB\https_sws-gateway-nr.schwab.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/02/16-16:51:06.676 6e1c Level-0 table #5: started
+2025/02/16-16:51:06.678 6e1c Level-0 table #5: 705 bytes OK
+2025/02/16-16:51:06.680 6e1c Delete type=0 #3
+2025/02/16-16:51:06.680 5814 Manual compaction at level-0 from '\x00\x02\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x03\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/02/16-16:51:07.210 6e1c Level-0 table #7: started
+2025/02/16-16:51:07.212 6e1c Level-0 table #7: 1004 bytes OK
+2025/02/16-16:51:07.213 6e1c Delete type=0 #4
+2025/02/16-16:51:07.213 5814 Manual compaction at level-0 from '\x00\x01\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x02\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/02/16-16:51:07.213 5814 Manual compaction at level-1 from '\x00\x01\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x02\x00\x00\x00' @ 0 : 0; will stop at '\x00\x03\x00\x00\xc8\x08\x00k\x00e\x00y\x00s\x00t\x00o\x00r\x00e' @ 44 : 1
+2025/02/16-16:51:07.214 5814 Compacting 1@1 + 1@2 files
+2025/02/16-16:51:07.215 5814 Generated table #8@1: 20 keys, 581 bytes
+2025/02/16-16:51:07.215 5814 Compacted 1@1 + 1@2 files => 581 bytes
+2025/02/16-16:51:07.216 5814 compacted to: files[ 0 0 1 0 0 0 0 ]
+2025/02/16-16:51:07.217 5814 Delete type=2 #7
+2025/02/16-16:51:07.217 5814 Manual compaction at level-1 from '\x00\x03\x00\x00\xc8\x08\x00k\x00e\x00y\x00s\x00t\x00o\x00r\x00e' @ 44 : 1 .. '\x00\x02\x00\x00\x00' @ 0 : 0; will stop at (end)

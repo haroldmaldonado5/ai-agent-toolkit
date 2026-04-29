@@ -1,0 +1,17 @@
+POWER ON
+BATTERY FULL
+Now Playing
+0 of 0
+🎵
+🎮
+No songs loaded.
+Visit
+[0] (546,413)<a href='/admin.html'>Admin Panel />
+to upload MP3s.
+[1] (500,538)<div  />
+0:00
+-0:00
+C5M MUXIC PLAYER
+[2] (500,750)<button class='btn-circle btn-shuffle' id='btnShuffle' title='Shuffle' />
+[3] (398,900)<div  />
+[4] (597,900)<button class='btn-circle btn-play-pause' id='btnPause' title='Pause' />

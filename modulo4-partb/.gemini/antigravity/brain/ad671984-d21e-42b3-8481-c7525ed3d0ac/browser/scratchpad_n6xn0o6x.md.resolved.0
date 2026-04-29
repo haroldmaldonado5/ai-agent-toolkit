@@ -1,0 +1,8 @@
+# Music Player Verification Plan
+
+- [ ] Open `http://localhost:3000`
+- [ ] Wait for page load
+- [ ] Capture screenshot
+- [ ] Analyze DOM and UI elements
+- [ ] Compare with requirements (Game Boy style, blue progress bar, D-pad, etc.)
+- [ ] Report findings

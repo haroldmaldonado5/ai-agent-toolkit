@@ -1,0 +1,14 @@
+2026/01/19-10:22:36.049 304 Reusing MANIFEST C:\Users\cu5to\.thinkorswim\login-browser-data-v29-0\Default\IndexedDB\https_sws-gateway-nr.schwab.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/01/19-10:22:36.059 304 Recovering log #120
+2026/01/19-10:22:36.059 304 Reusing old log C:\Users\cu5to\.thinkorswim\login-browser-data-v29-0\Default\IndexedDB\https_sws-gateway-nr.schwab.com_0.indexeddb.leveldb/000120.log 
+2026/01/19-10:22:36.060 304 Delete type=2 #118
+2026/01/19-10:22:37.094 304 Level-0 table #125: started
+2026/01/19-10:22:37.104 304 Level-0 table #125: 556 bytes OK
+2026/01/19-10:22:37.106 304 Delete type=0 #120
+2026/01/19-10:22:37.106 304 Manual compaction at level-0 from '\x00/\x00\x00\x00' @ 72057594037927935 : 1 .. '\x000\x00\x00\x00' @ 0 : 0; will stop at '\x00/\x00\x00\x05' @ 1249 : 1
+2026/01/19-10:22:37.106 304 Compacting 1@0 + 1@1 files
+2026/01/19-10:22:37.118 304 Generated table #126@0: 15 keys, 554 bytes
+2026/01/19-10:22:37.118 304 Compacted 1@0 + 1@1 files => 554 bytes
+2026/01/19-10:22:37.120 304 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/01/19-10:22:37.120 304 Delete type=2 #125
+2026/01/19-10:22:37.121 304 Manual compaction at level-0 from '\x00/\x00\x00\x05' @ 1249 : 1 .. '\x000\x00\x00\x00' @ 0 : 0; will stop at (end)

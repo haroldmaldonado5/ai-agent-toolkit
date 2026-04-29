@@ -1,0 +1,9 @@
+2025/12/15-09:30:32.398 2724 Reusing MANIFEST C:\Users\cu5to\.thinkorswim\login-browser-data-v29-1\Default\IndexedDB\https_sws-gateway-nr.schwab.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/12/15-09:30:32.409 2724 Recovering log #6
+2025/12/15-09:30:32.409 2724 Reusing old log C:\Users\cu5to\.thinkorswim\login-browser-data-v29-1\Default\IndexedDB\https_sws-gateway-nr.schwab.com_0.indexeddb.leveldb/000006.log 
+2025/12/15-09:30:32.409 2724 Delete type=2 #5
+2025/12/15-09:30:33.926 2724 Level-0 table #11: started
+2025/12/15-09:30:33.928 2724 Level-0 table #11: 8415 bytes OK
+2025/12/15-09:30:33.930 2724 Delete type=0 #6
+2025/12/15-09:30:33.930 2724 Manual compaction at level-0 from '\x00\x08\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x09\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/12/15-09:30:33.990 48b0 Manual compaction at level-0 from '\x00\x07\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x08\x00\x00\x00' @ 0 : 0; will stop at (end)

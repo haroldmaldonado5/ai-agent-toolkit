@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C5M Muxic Player</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Reset & Base ────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: #7a8c5e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ─── Game Boy Shell ──────────────────────────────── */
+    .gameboy {
+      width: 340px;
+      background: #8aab6a;
+      border-radius: 18px 18px 80px 80px;
+      box-shadow:
+        inset 0 4px 8px rgba(255,255,255,0.3),
+        inset 0 -6px 12px rgba(0,0,0,0.3),
+        0 20px 60px rgba(0,0,0,0.5),
+        0 4px 0 #5a7a42;
+      position: relative;
+      padding-bottom: 30px;
+      user-select: none;
+    }
+
+    /* Top edge texture */
+    .gameboy::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 20px; right: 20px;
+      height: 10px;
+      background: linear-gradient(90deg,
+        #6a8a50 0%, #9ac070 20%, #9ac070 80%, #6a8a50 100%
+      );
+      border-radius: 0 0 4px 4px;
+      opacity: 0.6;
+    }
+
+    /* ─── Top Shell (Screen Half) ─────────────────────── */
+    .gameboy-top {
+      background: #8aab6a;
+      border-radius: 18px 18px 0 0;
+      padding: 22px 22px 0;
+      position: relative;
+    }
+
+    /* status bar dots on top */
+    .top-dots {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+    .top-dots span {
+      width: 8px; height: 8px;
+      background: #6a8a50;
+      border-radius: 50%;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.4);
+    }
+
+    /* ─── Screen Bezel ────────────────────────────────── */
+    .screen-bezel {
+      background: #2a3a1a;
+      border-radius: 10px;
+      padding: 10px 10px 0;
+      box-shadow:
+        inset 0 4px 10px rgba(0,0,0,0.6),
+        0 2px 4px rgba(0,0,0,0.4);
+      position: relative;
+    }
+
+    /* Power/Battery bar */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      color: #a0c878;
+      font-size: 8px;
+      font-family: 'Press Start 2P', monospace;
+      padding: 0 2px 6px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Battery icon */
+    .battery-icon {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .battery-icon::before {
+      content: '';
+      display: block;
+      width: 18px; height: 9px;
+      border: 1.5px solid #a0c878;
+      border-radius: 2px;
+      position: relative;
+      background: linear-gradient(90deg, #a0c878 85%, transparent 85%);
+    }
+    .battery-icon::after {
+      content: '';
+      display: block;
+      width: 3px; height: 5px;
+      background: #a0c878;
+      border-radius: 0 1px 1px 0;
+    }
+
+    /* ─── LCD Screen ──────────────────────────────────── */
+    .screen {
+      background: linear-gradient(160deg, #cfd8c0 0%, #bfcaaf 100%);
+      border-radius: 4px;
+      padding: 12px;
+      min-height: 240px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* LCD scanline effect */
+    .screen::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(0,0,0,0.04) 3px,
+        rgba(0,0,0,0.04) 4px
+      );
+      pointer-events: none;
+    }
+
+    /* Now Playing header */
+    .now-playing-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      position: relative;
+    }
+    .now-playing-header h2 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: #1a2a0a;
+      letter-spacing: 0.3px;
+    }
+    .play-indicator {
+      width: 0; height: 0;
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+      border-left: 11px solid #1a2a0a;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .play-indicator.active { opacity: 1; }
+
+    /* Track counter */
+    .track-counter {
+      font-size: 13px;
+      font-weight: 600;
+      color: #2a3a1a;
+      margin-bottom: 10px;
+    }
+
+    /* Song info row */
+    .song-info {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .album-art {
+      width: 80px; height: 80px;
+      flex-shrink: 0;
+      border-radius: 4px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #3a4a2a, #6a7a4a);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+    }
+    .album-art img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .album-art-placeholder {
+      font-size: 28px;
+      opacity: 0.7;
+    }
+
+    .song-details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      overflow: hidden;
+    }
+    .song-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1a2a0a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .song-artist {
+      font-size: 15px;
+      font-weight: 500;
+      color: #2a3a1a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .song-album {
+      font-size: 13px;
+      font-weight: 400;
+      color: #4a5a3a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ─── Progress Bar ───────────────────────────────────*/
+    .progress-wrap {
+      margin-bottom: 6px;
+    }
+    .progress-bar-track {
+      width: 100%;
+      height: 14px;
+      background: #a8b898;
+      border-radius: 3px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #5599ee, #88bbff);
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.5s linear;
+      position: relative;
+    }
+    .progress-bar-fill::after {
+      content: '';
+      position: absolute;
+      top: 2px; left: 0; right: 0;
+      height: 4px;
+      background: rgba(255,255,255,0.4);
+      border-radius: 2px;
+    }
+
+    /* Time row */
+    .time-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      color: #2a3a1a;
+    }
+
+    /* ─── Brand Bar ──────────────────────────────────── */
+    .brand-bar {
+      background: #111;
+      border-radius: 0 0 4px 4px;
+      padding: 7px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0;
+    }
+    .brand-text {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: #e8e8e8;
+      letter-spacing: 2px;
+    }
+
+    /* ─── Hinge ──────────────────────────────────────── */
+    .hinge {
+      height: 18px;
+      background: linear-gradient(180deg, #4a6a32 0%, #3a5228 40%, #4a6a32 100%);
+      margin: 0 -1px;
+      position: relative;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    }
+    .hinge::before, .hinge::after {
+      content: '';
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      width: 30px; height: 10px;
+      background: #2a4020;
+      border-radius: 3px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+    }
+    .hinge::before { left: 20px; }
+    .hinge::after { right: 20px; }
+
+    /* ─── Controls Panel ─────────────────────────────── */
+    .controls-panel {
+      background: #8aab6a;
+      padding: 20px 20px 10px;
+      position: relative;
+      border-radius: 0 0 0 0;
+    }
+
+    /* Top center: Shuffle button */
+    .shuffle-row {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    /* ─── D-Pad ──────────────────────────────────────── */
+    .controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .dpad {
+      width: 110px; height: 110px;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .dpad-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 38px; height: 38px;
+      background: radial-gradient(circle at 40% 35%, #5a5a5a, #2a2a2a);
+      border-radius: 50%;
+      z-index: 2;
+      box-shadow:
+        0 2px 6px rgba(0,0,0,0.5),
+        inset 0 1px 2px rgba(255,255,255,0.15);
+    }
+    .dpad-arm {
+      position: absolute;
+      background: linear-gradient(180deg, #4a4a4a 0%, #2a2a2a 100%);
+      border-radius: 4px;
+      box-shadow:
+        0 3px 8px rgba(0,0,0,0.5),
+        inset 0 1px 2px rgba(255,255,255,0.1);
+      cursor: pointer;
+      transition: filter 0.1s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .dpad-arm:active { filter: brightness(0.8); transform: scale(0.97); }
+    .dpad-arm.up    { width: 34px; height: 40px; top: 0;   left: 50%; transform: translateX(-50%); border-radius: 4px 4px 0 0; }
+    .dpad-arm.down  { width: 34px; height: 40px; bottom: 0;left: 50%; transform: translateX(-50%); border-radius: 0 0 4px 4px; }
+    .dpad-arm.left  { width: 40px; height: 34px; left: 0;  top: 50%;  transform: translateY(-50%); border-radius: 4px 0 0 4px; }
+    .dpad-arm.right { width: 40px; height: 34px; right: 0; top: 50%;  transform: translateY(-50%); border-radius: 0 4px 4px 0; }
+
+    .dpad-arm svg { width: 12px; height: 12px; fill: #888; }
+
+    /* enclosure ring around dpad */
+    .dpad-ring {
+      position: absolute;
+      inset: -8px;
+      background: radial-gradient(ellipse at 40% 35%, #7a9a5a, #5a7a3a);
+      border-radius: 50%;
+      z-index: -1;
+      box-shadow:
+        inset 0 4px 8px rgba(0,0,0,0.3),
+        0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    /* ─── Action Buttons (Play/Pause) ────────────────── */
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn-group-ab {
+      display: flex;
+      gap: 14px;
+    }
+
+    .btn-circle {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      transition: transform 0.1s, filter 0.1s;
+      box-shadow:
+        0 4px 10px rgba(0,0,0,0.4),
+        inset 0 1px 3px rgba(255,255,255,0.15),
+        0 2px 0 rgba(0,0,0,0.4);
+    }
+    .btn-circle:active {
+      transform: translateY(2px);
+      box-shadow:
+        0 2px 5px rgba(0,0,0,0.4),
+        inset 0 1px 3px rgba(255,255,255,0.1),
+        0 0px 0 rgba(0,0,0,0.4);
+    }
+
+    .btn-play-pause {
+      background: radial-gradient(circle at 40% 35%, #5a5a5a, #2a2a2a);
+    }
+    .btn-shuffle {
+      width: 42px; height: 42px;
+      background: radial-gradient(circle at 40% 35%, #5a5a5a, #2a2a2a);
+    }
+
+    .btn-circle svg {
+      width: 22px; height: 22px;
+      fill: #ccc;
+    }
+    .btn-shuffle svg { width: 18px; height: 18px; }
+
+    /* Speaker dots */
+    .speaker {
+      position: absolute;
+      left: 50%; transform: translateX(-50%);
+      display: grid;
+      grid-template-columns: repeat(4, 6px);
+      grid-template-rows: repeat(4, 6px);
+      gap: 5px;
+      bottom: 56px;
+    }
+    .speaker-dot {
+      width: 5px; height: 5px;
+      background: #6a8a50;
+      border-radius: 50%;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.4);
+    }
+
+    /* ─── Bottom Buttons (Prev/Next) ─────────────────── */
+    .bottom-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      padding: 8px 20px 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-nav {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 35%, #5a5a5a, #2a2a2a);
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow:
+        0 4px 10px rgba(0,0,0,0.4),
+        inset 0 1px 3px rgba(255,255,255,0.15),
+        0 2px 0 rgba(0,0,0,0.3);
+      transition: transform 0.1s;
+    }
+    .btn-nav:active { transform: translateY(2px); }
+    .btn-nav svg { width: 18px; height: 18px; fill: #ccc; }
+
+    /* ─── Song List (hidden, accessed via D-Pad) ─────── */
+    .song-list-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      backdrop-filter: blur(4px);
+    }
+    .song-list-overlay.open { display: flex; }
+    .song-list-panel {
+      background: #1a2a0a;
+      border-radius: 12px;
+      width: 320px;
+      max-height: 70vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+    .song-list-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      background: #0a1a00;
+      border-bottom: 1px solid #2a4a10;
+    }
+    .song-list-header h3 {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: #a0c878;
+      letter-spacing: 1px;
+    }
+    .btn-close {
+      background: none;
+      border: none;
+      color: #a0c878;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 0 4px;
+    }
+    .song-list-body {
+      overflow-y: auto;
+      flex: 1;
+    }
+    .song-list-body::-webkit-scrollbar { width: 4px; }
+    .song-list-body::-webkit-scrollbar-track { background: #0a1a00; }
+    .song-list-body::-webkit-scrollbar-thumb { background: #4a7a20; border-radius: 2px; }
+
+    .song-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid #1a3000;
+      transition: background 0.15s;
+    }
+    .song-item:hover { background: #2a4a10; }
+    .song-item.active { background: #3a6010; }
+    .song-item-thumb {
+      width: 40px; height: 40px;
+      border-radius: 4px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #2a4a10;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .song-item-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .song-item-info { flex: 1; overflow: hidden; }
+    .song-item-title {
+      font-size: 13px; font-weight: 600; color: #d0e8b0;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .song-item-sub {
+      font-size: 11px; color: #7a9a5a;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .song-item-dur {
+      font-size: 11px; color: #5a7a3a; flex-shrink: 0;
+    }
+    .no-songs {
+      padding: 30px;
+      text-align: center;
+      color: #5a7a3a;
+      font-size: 13px;
+    }
+
+    /* ─── Empty State ────────────────────────────────── */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 160px;
+      gap: 8px;
+      color: #4a5a3a;
+    }
+    .empty-state .icon { font-size: 36px; opacity: 0.5; }
+    .empty-state p { font-size: 12px; text-align: center; line-height: 1.5; }
+    .empty-state a {
+      color: #5599ee;
+      font-size: 12px;
+      text-decoration: none;
+    }
+    .empty-state a:hover { text-decoration: underline; }
+
+    /* ─── Shuffle active state ────────────────────────── */
+    .btn-shuffle.shuffling { background: radial-gradient(circle at 40% 35%, #336633, #1a4a1a); }
+    .btn-shuffle.shuffling svg { fill: #88ee88; }
+
+    /* ─── Animated marquee for long titles ───────────── */
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee-wrap {
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .marquee-inner {
+      display: inline-block;
+      animation: marquee 8s linear infinite;
+    }
+    .marquee-inner.paused { animation-play-state: paused; }
+  </style>
+</head>
+<body>
+
+<!-- Song List Overlay -->
+<div class="song-list-overlay" id="songListOverlay">
+  <div class="song-list-panel">
+    <div class="song-list-header">
+      <h3>🎵 PLAYLIST</h3>
+      <button class="btn-close" id="closeSongList">✕</button>
+    </div>
+    <div class="song-list-body" id="songListBody">
+      <div class="no-songs">No songs loaded</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!--                  GAME BOY SHELL                   -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="gameboy">
+
+  <!-- ── Top Half (Screen) ── -->
+  <div class="gameboy-top">
+    <div class="top-dots">
+      <span></span><span></span><span></span>
+    </div>
+
+    <div class="screen-bezel">
+      <!-- Status bar -->
+      <div class="status-bar">
+        <span>POWER ON</span>
+        <span>BATTERY FULL <span class="battery-icon"></span></span>
+      </div>
+
+      <!-- LCD Screen -->
+      <div class="screen" id="screen">
+
+        <!-- Now Playing header -->
+        <div class="now-playing-header">
+          <div class="play-indicator" id="playIndicator"></div>
+          <h2>Now Playing</h2>
+        </div>
+
+        <!-- Track counter -->
+        <div class="track-counter" id="trackCounter">0 of 0</div>
+
+        <!-- Song info -->
+        <div class="song-info" id="songInfo">
+          <div class="album-art" id="albumArt">
+            <span class="album-art-placeholder">🎵</span>
+          </div>
+          <div class="song-details" id="songDetails">
+            <div class="empty-state" id="emptyState">
+              <div class="icon">🎮</div>
+              <p>No songs loaded.<br/>Visit <a href="/admin.html">Admin Panel</a><br/>to upload MP3s.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="progress-wrap">
+          <div class="progress-bar-track" id="progressTrack">
+            <div class="progress-bar-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <!-- Time -->
+        <div class="time-row">
+          <span id="currentTime">0:00</span>
+          <span id="remainingTime">-0:00</span>
+        </div>
+
+      </div><!-- /screen -->
+
+      <!-- Brand bar -->
+      <div class="brand-bar">
+        <span class="brand-text">C5M MUXIC PLAYER</span>
+      </div>
+    </div><!-- /screen-bezel -->
+  </div><!-- /gameboy-top -->
+
+  <!-- ── Hinge ── -->
+  <div class="hinge"></div>
+
+  <!-- ── Controls Panel ── -->
+  <div class="controls-panel">
+
+    <!-- Shuffle button centered at top -->
+    <div class="shuffle-row">
+      <button class="btn-circle btn-shuffle" id="btnShuffle" title="Shuffle">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- D-Pad + Action Buttons Row -->
+    <div class="controls-row">
+
+      <!-- D-Pad -->
+      <div style="position:relative;width:110px;height:110px;flex-shrink:0;">
+        <div class="dpad-ring"></div>
+        <div class="dpad">
+          <div class="dpad-arm up" id="dpadUp" title="Previous">
+            <svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>
+          </div>
+          <div class="dpad-arm down" id="dpadDown" title="Next">
+            <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+          <div class="dpad-arm left" id="dpadLeft" title="Seek Back">
+            <svg viewBox="0 0 24 24"><path d="M14 7l-5 5 5 5z"/></svg>
+          </div>
+          <div class="dpad-arm right" id="dpadRight" title="Seek Forward">
+            <svg viewBox="0 0 24 24"><path d="M10 17l5-5-5-5z"/></svg>
+          </div>
+          <div class="dpad-center"></div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <div class="btn-group-ab">
+          <!-- Play -->
+          <button class="btn-circle btn-play-pause" id="btnPlay" title="Play">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <!-- Pause -->
+          <button class="btn-circle btn-play-pause" id="btnPause" title="Pause">
+            <svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Speaker dots -->
+    <div class="speaker">
+      <div class="speaker-dot"></div><div class="speaker-dot"></div>
+      <div class="speaker-dot"></div><div class="speaker-dot"></div>
+      <div class="speaker-dot"></div><div class="speaker-dot"></div>
+      <div class="speaker-dot"></div><div class="speaker-dot"></div>
+      <div class="speaker-dot"></div><div class="speaker-dot"></div>
+      <div class="speaker-dot"></div><div class="speaker-dot"></div>
+      <div class="speaker-dot"></div><div class="speaker-dot"></div>
+      <div class="speaker-dot"></div><div class="speaker-dot"></div>
+    </div>
+
+  </div><!-- /controls-panel -->
+
+  <!-- ── Bottom Buttons (Prev/Next) ── -->
+  <div class="bottom-buttons">
+    <button class="btn-nav" id="btnPrev" title="Previous Song">
+      <svg viewBox="0 0 24 24">
+        <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+      </svg>
+    </button>
+    <button class="btn-nav" id="btnNext" title="Next Song">
+      <svg viewBox="0 0 24 24">
+        <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+      </svg>
+    </button>
+  </div>
+
+</div><!-- /gameboy -->
+
+<!-- Hidden audio element -->
+<audio id="audioPlayer" preload="auto"></audio>
+
+<script>
+// ─────────────────────────────────────────────────────────
+//  C5M MUXIC PLAYER – Main Logic
+// ─────────────────────────────────────────────────────────
+
+const audio = document.getElementById('audioPlayer');
+const btnPlay = document.getElementById('btnPlay');
+const btnPause = document.getElementById('btnPause');
+const btnPrev = document.getElementById('btnPrev');
+const btnNext = document.getElementById('btnNext');
+const btnShuffle = document.getElementById('btnShuffle');
+const progressFill = document.getElementById('progressFill');
+const progressTrack = document.getElementById('progressTrack');
+const currentTimeEl = document.getElementById('currentTime');
+const remainingTimeEl = document.getElementById('remainingTime');
+const trackCounter = document.getElementById('trackCounter');
+const playIndicator = document.getElementById('playIndicator');
+const albumArt = document.getElementById('albumArt');
+const songDetails = document.getElementById('songDetails');
+const emptyState = document.getElementById('emptyState');
+const songListOverlay = document.getElementById('songListOverlay');
+const songListBody = document.getElementById('songListBody');
+const closeSongList = document.getElementById('closeSongList');
+const dpadUp = document.getElementById('dpadUp');
+const dpadDown = document.getElementById('dpadDown');
+const dpadLeft = document.getElementById('dpadLeft');
+const dpadRight = document.getElementById('dpadRight');
+
+let songs = [];
+let currentIndex = 0;
+let isPlaying = false;
+let isShuffle = false;
+let shuffledOrder = [];
+
+// ─── Format time ─────────────────────────────────────────
+function fmtTime(sec) {
+  if (!sec || isNaN(sec)) return '0:00';
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60);
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+// ─── Load song list from API ─────────────────────────────
+async function loadSongs() {
+  try {
+    const res = await fetch('/api/songs');
+    songs = await res.json();
+    if (songs.length > 0) {
+      buildShuffleOrder();
+      loadTrack(0);
+      renderSongList();
+    } else {
+      showEmptyState();
+    }
+  } catch(e) {
+    console.error('Failed to load songs:', e);
+    showEmptyState();
+  }
+}
+
+function showEmptyState() {
+  albumArt.innerHTML = '<span class="album-art-placeholder">🎵</span>';
+  songDetails.innerHTML = `
+    <div class="empty-state" id="emptyState">
+      <div class="icon">🎮</div>
+      <p>No songs loaded.<br/>Visit <a href="/admin.html">Admin Panel</a><br/>to upload MP3s.</p>
+    </div>`;
+  trackCounter.textContent = '0 of 0';
+}
+
+// ─── Build shuffled order ─────────────────────────────────
+function buildShuffleOrder() {
+  shuffledOrder = [...Array(songs.length).keys()];
+  for (let i = shuffledOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledOrder[i], shuffledOrder[j]] = [shuffledOrder[j], shuffledOrder[i]];
+  }
+}
+
+// ─── Load track ──────────────────────────────────────────
+function loadTrack(index) {
+  if (!songs.length) return;
+  currentIndex = ((index % songs.length) + songs.length) % songs.length;
+  const song = songs[currentIndex];
+
+  // Album art
+  if (song.artwork) {
+    albumArt.innerHTML = `<img src="${song.artwork}" alt="Album Art" />`;
+  } else {
+    albumArt.innerHTML = '<span class="album-art-placeholder">🎵</span>';
+  }
+
+  // Song details
+  const title = song.title || 'Unknown';
+  const artist = song.artist || 'Unknown';
+  const album = song.album || '';
+
+  songDetails.innerHTML = `
+    <div class="song-title">${escHtml(title)}</div>
+    <div class="song-artist">${escHtml(artist)}</div>
+    ${album ? `<div class="song-album">${escHtml(album)}</div>` : ''}
+  `;
+
+  // Track counter
+  trackCounter.textContent = `${currentIndex + 1} of ${songs.length}`;
+
+  // Audio
+  audio.src = song.url;
+  audio.load();
+  progressFill.style.width = '0%';
+  currentTimeEl.textContent = '0:00';
+  remainingTimeEl.textContent = '-0:00';
+
+  // Highlight in list
+  renderSongList();
+
+  if (isPlaying) audio.play().catch(() => {});
+}
+
+// ─── Play/Pause ──────────────────────────────────────────
+function play() {
+  if (!songs.length) return;
+  audio.play().then(() => {
+    isPlaying = true;
+    playIndicator.classList.add('active');
+  }).catch(console.error);
+}
+
+function pause() {
+  audio.pause();
+  isPlaying = false;
+  playIndicator.classList.remove('active');
+}
+
+function togglePlay() {
+  if (isPlaying) pause(); else play();
+}
+
+// ─── Next / Prev ─────────────────────────────────────────
+function nextTrack() {
+  if (!songs.length) return;
+  if (isShuffle) {
+    const pos = shuffledOrder.indexOf(currentIndex);
+    const nextPos = (pos + 1) % shuffledOrder.length;
+    loadTrack(shuffledOrder[nextPos]);
+  } else {
+    loadTrack(currentIndex + 1);
+  }
+  if (isPlaying) play();
+}
+
+function prevTrack() {
+  if (!songs.length) return;
+  // If more than 3s played, restart; else go to previous
+  if (audio.currentTime > 3) {
+    audio.currentTime = 0;
+    return;
+  }
+  if (isShuffle) {
+    const pos = shuffledOrder.indexOf(currentIndex);
+    const prevPos = (pos - 1 + shuffledOrder.length) % shuffledOrder.length;
+    loadTrack(shuffledOrder[prevPos]);
+  } else {
+    loadTrack(currentIndex - 1);
+  }
+  if (isPlaying) play();
+}
+
+// ─── Seek ────────────────────────────────────────────────
+function seekBy(seconds) {
+  if (!audio.duration) return;
+  audio.currentTime = Math.max(0, Math.min(audio.duration, audio.currentTime + seconds));
+}
+
+// ─── Progress bar click ───────────────────────────────────
+progressTrack.addEventListener('click', (e) => {
+  if (!audio.duration) return;
+  const rect = progressTrack.getBoundingClientRect();
+  const ratio = (e.clientX - rect.left) / rect.width;
+  audio.currentTime = ratio * audio.duration;
+});
+
+// ─── Audio events ─────────────────────────────────────────
+audio.addEventListener('timeupdate', () => {
+  if (!audio.duration) return;
+  const pct = (audio.currentTime / audio.duration) * 100;
+  progressFill.style.width = `${pct}%`;
+  currentTimeEl.textContent = fmtTime(audio.currentTime);
+  remainingTimeEl.textContent = `-${fmtTime(audio.duration - audio.currentTime)}`;
+});
+
+audio.addEventListener('ended', () => { nextTrack(); });
+audio.addEventListener('play', () => {
+  isPlaying = true;
+  playIndicator.classList.add('active');
+});
+audio.addEventListener('pause', () => {
+  isPlaying = false;
+  playIndicator.classList.remove('active');
+});
+
+// ─── Song List ────────────────────────────────────────────
+function renderSongList() {
+  if (!songs.length) {
+    songListBody.innerHTML = '<div class="no-songs">No songs uploaded yet.</div>';
+    return;
+  }
+  songListBody.innerHTML = songs.map((s, i) => `
+    <div class="song-item ${i === currentIndex ? 'active' : ''}" data-index="${i}">
+      <div class="song-item-thumb">
+        ${s.artwork ? `<img src="${s.artwork}" alt="" />` : '🎵'}
+      </div>
+      <div class="song-item-info">
+        <div class="song-item-title">${escHtml(s.title)}</div>
+        <div class="song-item-sub">${escHtml(s.artist)}</div>
+      </div>
+      <div class="song-item-dur">${fmtTime(s.duration)}</div>
+    </div>
+  `).join('');
+
+  songListBody.querySelectorAll('.song-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const idx = parseInt(el.dataset.index);
+      isPlaying = true;
+      loadTrack(idx);
+      play();
+      songListOverlay.classList.remove('open');
+    });
+  });
+}
+
+// ─── D-Pad open song list (up/down nav) ─────────────────
+dpadUp.addEventListener('click', () => prevTrack());
+dpadDown.addEventListener('click', () => nextTrack());
+dpadLeft.addEventListener('click', () => seekBy(-10));
+dpadRight.addEventListener('click', () => seekBy(10));
+
+// Tap center of dpad-ring to open list
+document.querySelector('.dpad-ring').addEventListener('click', (e) => {
+  songListOverlay.classList.add('open');
+  renderSongList();
+});
+
+// ─── Shuffle ─────────────────────────────────────────────
+btnShuffle.addEventListener('click', () => {
+  isShuffle = !isShuffle;
+  btnShuffle.classList.toggle('shuffling', isShuffle);
+  if (isShuffle) buildShuffleOrder();
+});
+
+// ─── Buttons ─────────────────────────────────────────────
+btnPlay.addEventListener('click', play);
+btnPause.addEventListener('click', pause);
+btnNext.addEventListener('click', nextTrack);
+btnPrev.addEventListener('click', prevTrack);
+closeSongList.addEventListener('click', () => songListOverlay.classList.remove('open'));
+songListOverlay.addEventListener('click', (e) => {
+  if (e.target === songListOverlay) songListOverlay.classList.remove('open');
+});
+
+// ─── Keyboard shortcuts ───────────────────────────────────
+document.addEventListener('keydown', (e) => {
+  switch(e.code) {
+    case 'Space': e.preventDefault(); togglePlay(); break;
+    case 'ArrowRight': nextTrack(); break;
+    case 'ArrowLeft': prevTrack(); break;
+    case 'ArrowUp': seekBy(10); break;
+    case 'ArrowDown': seekBy(-10); break;
+    case 'KeyS': btnShuffle.click(); break;
+    case 'KeyL': songListOverlay.classList.toggle('open'); renderSongList(); break;
+  }
+});
+
+// ─── Escape HTML ─────────────────────────────────────────
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── Init ─────────────────────────────────────────────────
+loadSongs();
+</script>
+</body>
+</html>

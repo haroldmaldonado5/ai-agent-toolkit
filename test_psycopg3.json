@@ -1,0 +1,6 @@
+﻿{
+  "nombre": "Usuario Final",
+  "email": "final@test.com",
+  "empresa": "Test Final SA",
+  "mensaje": "Prueba definitiva con psycopg3"
+}

@@ -1,0 +1,7 @@
+2024/07/20-21:47:56.827 12b0 Reusing MANIFEST C:\Users\cu5to\.thinkorswim\login-browser-data-v26-1\Default\IndexedDB\https_sws-gateway-nr.schwab.com_0.indexeddb.leveldb/MANIFEST-000001
+2024/07/20-21:47:56.828 12b0 Recovering log #4
+2024/07/20-21:47:56.828 12b0 Reusing old log C:\Users\cu5to\.thinkorswim\login-browser-data-v26-1\Default\IndexedDB\https_sws-gateway-nr.schwab.com_0.indexeddb.leveldb/000004.log 
+2024/07/20-21:47:56.942 4ab0 Level-0 table #8: started
+2024/07/20-21:47:56.943 4ab0 Level-0 table #8: 528 bytes OK
+2024/07/20-21:47:56.945 4ab0 Delete type=0 #4
+2024/07/20-21:47:56.945 4ab0 Manual compaction at level-0 from '\x00\x02\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x03\x00\x00\x00' @ 0 : 0; will stop at (end)
