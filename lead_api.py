@@ -19,6 +19,8 @@ from tenant_admin import admin_bp
 from auth import require_module
 from social_publisher import social_bp
 from analytics import analytics_bp
+from stripe_webhooks import stripe_bp
+app.register_blueprint(stripe_bp)
 app.register_blueprint(analytics_bp)
 app.register_blueprint(social_bp)
 app.register_blueprint(admin_bp)
