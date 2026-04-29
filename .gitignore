@@ -83,3 +83,10 @@ KEYS.txt
 test_tenant.py
 test_tenant1
 body.json
+# === MODULO4 ARCHIVOS GRANDES ===
+modulo4-partb/.antigravity/
+modulo4-partb/.cache/
+modulo4-partb/.local/
+modulo4-partc/.antigravity/
+modulo4-partc/.cache/
+modulo4-partc/.local/
