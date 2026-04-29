@@ -17,6 +17,8 @@ from lead_manager import add_lead, calculate_lead_score, init_leads_table
 app = Flask(__name__)
 from tenant_admin import admin_bp
 from auth import require_module
+from social_publisher import social_bp
+app.register_blueprint(social_bp)
 app.register_blueprint(admin_bp)
 
 # Voice Agents Module
