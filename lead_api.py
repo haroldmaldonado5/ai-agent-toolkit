@@ -29,36 +29,30 @@ app.register_blueprint(admin_bp)
 from api.voice.routes import voice_bp
 app.register_blueprint(voice_bp)
 
-CORS(app, resources={r"/api/*": {"origins": "*"}})  # Permitir peticiones desde Framer y otros orígenes
-# Inicializar tablas al startup (necesario para gunicorn/Railway)
-init_leads_table()
+CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+# Inicializar tablas al startup — envuelto en try/except para no crashear si DB no responde
+try:
+    init_leads_table()
+    print("DB initialized successfully")
+except Exception as e:
+    print(f"Warning: Could not init leads table: {e}")
+
 
 @app.route('/api/lead', methods=['POST'])
 def capture_lead():
     """
     Endpoint para capturar leads desde formularios web
-    
-    Recibe JSON:
-    {
-        "nombre": "Juan Pérez",
-        "email": "juan@empresa.com",
-        "telefono": "555-1234",
-        "empresa": "Empresa XYZ",
-        "mensaje": "Me interesa...",
-        "fuente": "web_form"
-    }
     """
     try:
         data = request.get_json()
-        
-        # Validar campos requeridos
+
         if not data.get('nombre') or not data.get('email') or not data.get('mensaje'):
             return jsonify({
                 'success': False,
                 'error': 'Campos requeridos: nombre, email, mensaje'
             }), 400
-        
-        # Agregar lead
+
         lead_id = add_lead(
             nombre=data['nombre'],
             email=data['email'],
@@ -67,16 +61,13 @@ def capture_lead():
             mensaje=data['mensaje'],
             fuente=data.get('fuente', 'web')
         )
-        
-        # TODO: Aquí enviar email de notificación
-        # TODO: Aquí enviar email de bienvenida al lead
-        
+
         return jsonify({
             'success': True,
             'lead_id': lead_id,
             'message': 'Lead capturado exitosamente'
         }), 201
-        
+
     except Exception as e:
         print(f"Error capturando lead: {str(e)}")
         return jsonify({
@@ -104,7 +95,6 @@ def get_leads_api():
             params.append(estado)
 
         query += " ORDER BY score DESC, fecha_captura DESC"
-
         cursor.execute(query, params)
 
         leads = []
@@ -186,17 +176,13 @@ def update_lead_estado_api(lead_id):
 @app.route('/api/stats', methods=['GET'])
 @require_module('leads')
 def get_stats():
-    """Estadísticas del pipeline"""
+    """Estadisticas del pipeline"""
     try:
         conn = get_connection()
         cursor = conn.cursor()
 
-        # Stats por estado
         cursor.execute("""
-            SELECT
-                estado,
-                COUNT(*) as cantidad,
-                AVG(score) as score_promedio
+            SELECT estado, COUNT(*) as cantidad, AVG(score) as score_promedio
             FROM leads
             GROUP BY estado
         """)
@@ -208,7 +194,6 @@ def get_stats():
                 'score_promedio': round(row[2], 1) if row[2] else 0
             }
 
-        # Stats generales
         cursor.execute("SELECT COUNT(*) FROM leads")
         total_leads = cursor.fetchone()[0]
 
@@ -237,36 +222,17 @@ def get_stats():
         }), 500
 
 
-
 @app.route('/health', methods=['GET'])
 def health():
     """Health check"""
-    return jsonify({'status': 'ok', 'service': 'lead-capture-api'})
+    return jsonify({'status': 'ok', 'service': 'nowcustom-api'})
 
 
 @app.route('/')
 def index():
-    """Sirve el formulario HTML"""
-    from flask import send_file
-    return send_file('lead_capture_form.html')
+    return jsonify({'service': 'NowCustom API', 'status': 'running'})
 
 
 if __name__ == '__main__':
-    print(" LEAD CAPTURE API")
-    print(" Inicializando base de datos...")
-    init_leads_table()
-    print(" Listo\n")
-    print(" API corriendo en: http://localhost:5000")
-    print(" Endpoints:")
-    print("   POST   /api/lead          - Capturar nuevo lead")
-    print("   GET    /api/leads         - Listar leads")
-    print("   PUT    /api/lead/:id/estado - Actualizar estado")
-    print("   GET    /api/stats         - Estadísticas")
-    print("   GET    /health            - Health check")
-    print("    POST   /api/voice/webhook      - Webhook Retell AI")
-    print("    POST   /api/voice/make-call    - Crear llamada saliente")
-    print("    POST   /api/voice/get-customer-data - Custom function")
-    print("\n Presiona Ctrl+C para detener\n")
-    
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
