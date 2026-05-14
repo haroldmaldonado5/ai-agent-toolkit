@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell, PieChart, Pie } from "recharts";
 
-const API_BASE = "https://ai-agent-toolkit-production.up.railway.app";
+const API_BASE = "https://ai-agent-toolkit-vzj1.onrender.com";
 
 const COLORS = {
   bg: "#0A0A0F",
