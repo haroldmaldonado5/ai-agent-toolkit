@@ -236,3 +236,9 @@ def index():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
+
+@app.route('/debug/db')
+def debug_db():
+    import os
+    url = os.environ.get('DATABASE_URL', 'NOT SET')
+    return jsonify({'db_host': url[:50] if url else 'empty'})
